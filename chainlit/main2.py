@@ -260,6 +260,7 @@ def filter_prerequisites(prerequisites):
                 filtered_prerequisites.extend(valid_codes)
     
     return filtered_prerequisites
+
 def determine_current_semester(profile):
     """
     Determine the current semester type (Fall or Spring) based on the courses completed.
@@ -296,10 +297,8 @@ def extract_course_codes(prerequisite_text):
     for i in zip(course_name,course_code):
         courses.append(i)
     
-    # Find all matches
-    # course_codes = re.findall(course_code_pattern, prerequisite_text)
-    # return course_name, course_code
     return courses
+
 def filter_available_courses(courses, completed_courses):
     """
     Given a list of retrieved courses and the set of completed courses, 
@@ -320,6 +319,7 @@ def filter_available_courses(courses, completed_courses):
     for course in courses:
         course_names.append(course[0])
     return course_names
+
 @tool
 def RecommendationFilterTool(query):
     '''Recommend courses for a student based on their current semester profile and completed courses'''
@@ -553,8 +553,6 @@ def remove_course_from_plan(input:str):
         return f"Error removing course {course_code}: {str(e)}"
 
 
-
-
 @tool
 def show_degree_plan() -> str:
     """Displays the current degree plan, listing all courses added so far by semester."""
@@ -677,30 +675,7 @@ def save_degree_plan() -> str:
         if not degree_plan:
             return "No degree plan found in session. Please create or load a degree plan first."
 
-        # Convert the degree plan to a dictionary for storage
-        # degree_plan_data = {
-        #     "student_id": degree_plan.student_id,
-        #     "program": degree_plan.program.value,
-        #     "courses": {
-        #         "semesters": [
-        #             {
-        #                 "semester": sem.semester,
-        #                 "courses": [
-        #                     {
-        #                         "course_code": course.course_code,
-        #                         "course_name": course.course_name,
-        #                         "units": course.units,
-        #                         "semester_availability": course.semester_availability,
-        #                         "prerequisites": course.prerequisites,
-        #                         "program": course.program
-        #                     }
-        #                     for course in sem.courses
-        #                 ]
-        #             }
-        #             for sem in degree_plan.semesters
-        #         ]
-        #     }
-        # }
+
         degree_plan_data = {
                 "program": user_info['profile']['program'],
                 "starting_year": user_info['profile']['starting_year'],
@@ -728,8 +703,6 @@ def save_degree_plan() -> str:
                 }
             }
         
-        print(f"Degree plan data: {degree_plan_data}")
-
         def clean_data(data):
             if isinstance(data, dict):
                 return {key: clean_data(value) for key, value in data.items()}
@@ -750,7 +723,6 @@ def save_degree_plan() -> str:
 
     except Exception as e:
         return f"An error occurred while saving the degree plan: {str(e)}"
-
 
 
 # Chat start event
@@ -820,6 +792,7 @@ async def setup_chain():
         cl.user_session.set("degree_plan", degreePlan)
         cl.user_session.set("validator", DegreeValidator(COURSE_DATA_PATH))
 
+
 @cl.on_message
 async def handle_message(message: cl.Message):
 
@@ -877,9 +850,6 @@ async def handle_message(message: cl.Message):
     except Exception as e:
         logging.error(f"Error processing message: {e}")
         await cl.Message("An error occurred while processing your message. Please try again.").send()
-
-
-
 
 
 async def wait_for_user_login(timeout=30):
